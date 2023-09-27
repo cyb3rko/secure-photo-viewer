@@ -71,6 +71,8 @@ public class receiverpictureactivity extends AppCompatActivity {
             }
         }
 
+        getWindow().findViewById(R.id.button).setOnClickListener(view -> screenislocked());
+
         //RateThisApp.onCreate(this);
         //RateThisApp.showRateDialogIfNeeded(this);
 
@@ -93,10 +95,6 @@ public class receiverpictureactivity extends AppCompatActivity {
         };
         goahead.run();
 
-    }
-
-    public void buttonpressed(View view) { //called when button is pressed
-        screenislocked();
     }
 
     @Override
