@@ -5,18 +5,12 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +22,19 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.kobakei.ratethisapp.RateThisApp;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 
@@ -41,8 +43,9 @@ public class receiverpictureactivity extends AppCompatActivity {
     //to make sure back button doesn't open old images
     @Override
     protected void onNewIntent(Intent intent) {
-    finish();
-    startActivity(intent);
+        super.onNewIntent(intent);
+        finish();
+        startActivity(intent);
     }
 
     Handler handly;
@@ -68,8 +71,8 @@ public class receiverpictureactivity extends AppCompatActivity {
             }
         }
 
-        RateThisApp.onCreate(this);
-        RateThisApp.showRateDialogIfNeeded(this);
+        //RateThisApp.onCreate(this);
+        //RateThisApp.showRateDialogIfNeeded(this);
 
         //periodically checks if the screen is locked, if it is calls screenislocked()
         handly = new Handler();
@@ -276,14 +279,14 @@ public class receiverpictureactivity extends AppCompatActivity {
 
             imageset.setMaxZoom(30);
 
-            Glide.with(this)
+            Glide.with(getContext())
                     .load(urinormal)
                     .override(2000, 2000)
                     //.override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .into(new GlideDrawableImageViewTarget(imageset) {
+                    .into(new DrawableImageViewTarget(imageset) {
                         @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-                            super.onResourceReady(resource, animation);
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            super.onResourceReady(resource, transition);
                             imageset.setZoom(1);
                         }
                     })
@@ -293,14 +296,14 @@ public class receiverpictureactivity extends AppCompatActivity {
         private void pictureSetFile(final TouchImageView imageset, Uri urinormal) {
             imageset.setMaxZoom(30);
 
-            Glide.with(this)
+            Glide.with(getContext())
                     .load(urinormal)
                     .override(2000, 2000)
                     //.override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .into(new GlideDrawableImageViewTarget(imageset) {
+                    .into(new DrawableImageViewTarget(imageset) {
                         @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-                            super.onResourceReady(resource, animation);
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            super.onResourceReady(resource, transition);
                             imageset.setZoom(1);
                         }
                     })
