@@ -32,6 +32,7 @@ import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
+import com.ortiz.touchview.TouchImageView
 
 class ReceiverPictureActivity : AppCompatActivity() {
     private lateinit var handly: Handler
