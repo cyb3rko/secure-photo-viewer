@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".receiverpictureactivity"
+        <activity android:name="com.gtp.showapicturetoyourfriend.ReceiverPictureActivity"
             android:noHistory="false"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
