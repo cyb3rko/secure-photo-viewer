@@ -117,13 +117,23 @@ class ReceiverPictureActivity : AppCompatActivity() {
 
         // puts uris into an array, whether there is one or multiple
         if (Intent.ACTION_SEND == action) {
-            val imageUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            val imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            }
             imageUris = ArrayList()
             if (imageUri != null) {
                 imageUris.add(imageUri)
             }
         } else if (Intent.ACTION_SEND_MULTIPLE == action) {
-            imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)!!
+            imageUris = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                 intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
+            }
         }
 
         if (imageUris == null) return
@@ -213,21 +223,17 @@ class ReceiverPictureActivity : AppCompatActivity() {
                 }
             } else {
                 if (type != null) {
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        if (requireActivity().checkSelfPermission(
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                        ) == PackageManager.PERMISSION_GRANTED) {
-                            rootView = typeMethod(rootView, uriNormal, container, type, inflater)
-                        } else {
-                            ActivityCompat.requestPermissions(
-                                requireActivity(),
-                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                                1
-                            )
-                            Toast.makeText(activity, R.string.permission, Toast.LENGTH_LONG).show()
-                        }
+                    if (requireActivity().checkSelfPermission(
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED) {
+                        rootView = typeMethod(uriNormal, container, type, inflater)
                     } else {
-                        rootView = typeMethod(rootView, uriNormal, container, type, inflater)
+                        ActivityCompat.requestPermissions(
+                            requireActivity(),
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            1
+                        )
+                        Toast.makeText(activity, R.string.permission, Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -238,13 +244,12 @@ class ReceiverPictureActivity : AppCompatActivity() {
         }
 
         private fun typeMethod(
-            rootView: View?,
             uriNormal: Uri,
             container: ViewGroup?,
             type: String,
             inflater: LayoutInflater
         ): View? {
-            var rootView = rootView
+            var rootView: View? = null
             if (type.startsWith("image/")) {
                 rootView = inflater.inflate(R.layout.adapterimage, container, false)
                 pictureSetFile(
