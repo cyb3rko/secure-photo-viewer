@@ -28,10 +28,27 @@ android {
     }
 }
 
+if (project.hasProperty('sign')) {
+    android {
+        signingConfigs {
+            release {
+                Properties properties = new Properties()
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+                storeFile file(properties.getProperty('uploadsigning.file'))
+                storePassword properties.getProperty('uploadsigning.password')
+                keyAlias properties.getProperty('uploadsigning.key.alias')
+                keyPassword properties.getProperty('uploadsigning.key.password')
+            }
+        }
+    }
+    android.buildTypes.release.signingConfig android.signingConfigs.release
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'com.github.MikeOrtiz:TouchImageView:3.6'
     //implementation 'io.github.kobakei:ratethisapp:1.2.0'
