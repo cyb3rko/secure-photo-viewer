@@ -16,7 +16,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
 import android.webkit.MimeTypeMap
 import android.widget.MediaController
@@ -24,6 +23,7 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -42,12 +42,26 @@ class ReceiverPictureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // makes window fullscreen and show on top of the lockscreen
-        window.requestFeature(Window.FEATURE_ACTION_BAR)
-        supportActionBar?.hide()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        } else {
+            @Suppress("DEPRECATION")
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+        } else {
+            @Suppress("DEPRECATION")
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+        }
         setContentView(R.layout.activity_receiverpictureactivity)
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.findViewById<View>(R.id.button).setOnClickListener { screenIsLocked() }
 
         if (savedInstanceState != null) {
