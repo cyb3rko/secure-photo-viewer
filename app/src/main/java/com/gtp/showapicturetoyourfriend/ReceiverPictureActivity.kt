@@ -23,6 +23,7 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.IntentSanitizer
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -85,10 +86,20 @@ class ReceiverPictureActivity : AppCompatActivity() {
     }
 
     // to make sure back button doesn't open old images
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        finish()
-        startActivity(intent)
+    override fun onNewIntent(intent: Intent) {
+        try {
+            val sanitizedIntent = IntentSanitizer.Builder()
+                .allowType("image/*")
+                .allowType("video/*")
+                .build()
+                .sanitizeByThrowing(intent)
+            super.onNewIntent(sanitizedIntent)
+            finish()
+            startActivity(sanitizedIntent)
+        } catch (e: SecurityException) {
+            Log.e("IntentSanitizer", "Security Exception occured while sanitizing new intent")
+            finish()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
