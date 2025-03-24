@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ortiz.touchview.TouchImageView
+import androidx.core.net.toUri
 
 class ReceiverPictureActivity : AppCompatActivity() {
     private lateinit var handly: Handler
@@ -96,7 +97,7 @@ class ReceiverPictureActivity : AppCompatActivity() {
             super.onNewIntent(sanitizedIntent)
             finish()
             startActivity(sanitizedIntent)
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             Log.e("IntentSanitizer", "Security Exception occured while sanitizing new intent")
             finish()
         }
@@ -214,9 +215,9 @@ class ReceiverPictureActivity : AppCompatActivity() {
         ): View? {
             var rootView: View? = null
             val forUri = requireArguments().getString("Uri")
-            val uriNormal = Uri.parse(forUri)
+            val uriNormal = forUri!!.toUri()
             var type: String? = null
-            val extension = MimeTypeMap.getFileExtensionFromUrl(forUri!!.replace("~", ""))
+            val extension = MimeTypeMap.getFileExtensionFromUrl(forUri.replace("~", ""))
             if (extension != null) {
                 type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
             }
