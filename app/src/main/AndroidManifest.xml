@@ -3,16 +3,17 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
-        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.gtp.showapicturetoyourfriend.ReceiverPictureActivity"
+        android:theme="@style/Theme.SecurePhotoViewer">
+        <activity
+            android:name="com.gtp.showapicturetoyourfriend.ReceiverPictureActivity"
             android:noHistory="false"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
