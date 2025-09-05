@@ -16,10 +16,16 @@ android {
         targetSdk = 36
         versionCode = 8
         versionName = "2.0.2"
+        signingConfig = signingConfigs.getByName("debug")
     }
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -35,19 +41,40 @@ android {
             jvmTarget.set(JvmTarget.JVM_21)
         }
     }
+    bundle {
+        storeArchive {
+            enable = false
+        }
+    }
+    packaging {
+        resources {
+            excludes.add("META-INF/*.version")
+            excludes.add("META-INF/**/LICENSE.txt")
+        }
+    }
+    dependenciesInfo {
+        // Disable including dependency metadata when building APKs
+        includeInApk = false
+        // Disable including dependency metadata when building Android App Bundles
+        includeInBundle = false
+    }
 }
 
+// Automatic pipeline build
+// build with '-Psign assembleRelease'
+// output at 'app/build/outputs/apk/release/app-release.apk'
+// build with '-Psign bundleRelease'
+// output at 'app/build/outputs/bundle/release/app-release.aab'
 if (project.hasProperty("sign")) {
     android {
         signingConfigs {
             create("release") {
-                val properties = Properties()
-                properties.load(project.rootProject.file("local.properties").inputStream())
-
-                storeFile = file(properties.getProperty("uploadsigning.file"))
-                storePassword = properties.getProperty("uploadsigning.password")
-                keyAlias = properties.getProperty("uploadsigning.key.alias")
-                keyPassword = properties.getProperty("uploadsigning.key.password")
+                enableV3Signing = true
+                enableV4Signing = true
+                storeFile = file(System.getenv("KEYSTORE_FILE"))
+                storePassword = System.getenv("KEYSTORE_PASSWD")
+                keyAlias = System.getenv("KEYSTORE_KEY_ALIAS")
+                keyPassword = System.getenv("KEYSTORE_KEY_PASSWD")
             }
         }
     }
