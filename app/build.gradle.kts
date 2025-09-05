@@ -12,7 +12,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.gtp.showapicturetoyourfriend"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 36
         versionCode = 8
         versionName = "2.0.2"
